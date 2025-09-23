@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { GEO_API_URL, geoApiOptions } from "../utils/api";
 
-//Fetch multiple city matches based on prefix search.
+/**
+ * Custom hook to fetch city coordinates based on a search query.
+ * @param {string} query - The city name prefix to search for.
+ * @returns {{ cities: Array<{ lat: number, lon: number, name: string }>, loading: boolean, error: any }}
+ */
 
 const useCoordinates = (query) => {
   const [cities, setCities] = useState([]);

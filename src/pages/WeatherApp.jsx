@@ -2,8 +2,9 @@ import { useState } from "react";
 import SearchBar from "../components/SearchBar";
 import WeatherCard from "../components/WeatherCard";
 import useWeatherData from "../hooks/useWeatherData";
+import { getWeatherIcon } from "../utils/weatherIcons";
 
-function WeatherApp() {
+export default function WeatherApp() {
   const [selectedCity, setSelectedCity] = useState(null);
 
   const { data, loading, error } = useWeatherData(
@@ -11,32 +12,41 @@ function WeatherApp() {
     selectedCity?.lon
   );
 
-  let temperature = null;
-  let weatherSymbol = null;
+  let weather = {
+    temperature: null,
+    wind: null,
+    pressure: null,
+    uv: null,
+    icon: null,
+    description: null,
+  };
 
   if (data) {
-    const tempParam = data.data.find((d) => d.parameter === "t_2m:C");
-    temperature = tempParam?.coordinates?.[0]?.dates?.[0]?.value;
+    const getValue = (param) =>
+      data.data.find((d) => d.parameter === param)?.coordinates?.[0]?.dates?.[0]
+        ?.value;
 
-    const symbolParam = data.data.find(
-      (d) => d.parameter === "weather_symbol_1h:idx"
-    );
-    const symbolValue = symbolParam?.coordinates?.[0]?.dates?.[0]?.value;
-    weatherSymbol = Array.isArray(symbolValue) ? symbolValue[0] : symbolValue;
+    weather.temperature = getValue("t_2m:C");
+    weather.wind = getValue("wind_speed_10m:kmh");
+    weather.pressure = getValue("msl_pressure:hPa");
+    weather.uv = getValue("uv:idx");
+
+    const weatherSymbol = getValue("weather_symbol_1h:idx");
+    const { icon, description } = getWeatherIcon(weatherSymbol);
+    weather.icon = icon;
+    weather.description = description;
   }
 
   return (
-    <div>
+    <div className="app-container">
+      <h1 className="app-title">🌐 JustWeather</h1>
       <SearchBar onSelectCity={setSelectedCity} />
       <WeatherCard
         city={selectedCity}
-        temperature={temperature}
-        weatherSymbol={weatherSymbol}
+        weather={weather}
         loading={loading}
         error={error}
       />
     </div>
   );
 }
-
-export default WeatherApp;

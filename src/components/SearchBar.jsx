@@ -6,12 +6,11 @@ const SearchBar = ({ onSelectCity }) => {
   const [query, setQuery] = useState("");
   const [selectedCity, setSelectedCity] = useState(null);
 
-  const debouncedQuery = useDebounce(query, 600);
-
+  const debouncedQuery = useDebounce(query, 1000);
   const { cities, loading, error } = useCoordinates(debouncedQuery);
 
   return (
-    <div>
+    <div className="search-container">
       <input
         type="text"
         value={query}
@@ -20,16 +19,18 @@ const SearchBar = ({ onSelectCity }) => {
           setSelectedCity(null);
         }}
         placeholder="Enter city"
+        className="search-input"
       />
 
-      {loading && <p> Searching cities...</p>}
-      {error && <p>{error.message}</p>}
+      {/* {loading && <p className="search-status">Searching cities...</p>} */}
+      {error && <p className="search-status text-error">{error.message}</p>}
 
       {cities.length > 0 && !selectedCity && (
-        <ul>
+        <ul className="search-results">
           {cities.map((city, idx) => (
             <li
               key={idx}
+              className="search-item"
               onClick={() => {
                 setSelectedCity(city);
                 onSelectCity(city);
