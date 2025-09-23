@@ -3,6 +3,7 @@ import SearchBar from "../components/SearchBar";
 import WeatherCard from "../components/WeatherCard";
 import useWeatherData from "../hooks/useWeatherData";
 import { getWeatherIcon } from "../utils/weatherIcons";
+import ForecastCard from "../components/ForecastCard";
 
 export default function WeatherApp() {
   const [selectedCity, setSelectedCity] = useState(null);
@@ -47,6 +48,7 @@ export default function WeatherApp() {
         loading={loading}
         error={error}
       />
+      <ForecastCard />
     </div>
   );
 }
