@@ -9,6 +9,8 @@ const SearchBar = ({ onSelectCity }) => {
   const debouncedQuery = useDebounce(query, 1000);
   const { cities, loading, error } = useCoordinates(debouncedQuery);
 
+  const showDropdown = loading || error || (cities.length > 0 && !selectedCity);
+
   return (
     <div className="search-container">
       <input
@@ -22,23 +24,28 @@ const SearchBar = ({ onSelectCity }) => {
         className="search-input"
       />
 
-      {/* {loading && <p className="search-status">Searching cities...</p>} */}
-      {error && <p className="search-status text-error">{error.message}</p>}
-
-      {cities.length > 0 && !selectedCity && (
+      {showDropdown && (
         <ul className="search-results">
-          {cities.map((city, idx) => (
-            <li
-              key={idx}
-              className="search-item"
-              onClick={() => {
-                setSelectedCity(city);
-                onSelectCity(city);
-              }}
-            >
-              {city.name}
+          {loading && <li className="search-status">Searching cities...</li>}
+          {error && (
+            <li className="search-status">
+              Something went wrong, please try later
             </li>
-          ))}
+          )}
+          {!loading &&
+            !error &&
+            cities.map((city, idx) => (
+              <li
+                key={idx}
+                className="search-item"
+                onClick={() => {
+                  setSelectedCity(city);
+                  onSelectCity(city);
+                }}
+              >
+                {city.name}
+              </li>
+            ))}
         </ul>
       )}
     </div>

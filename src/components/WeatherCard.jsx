@@ -15,7 +15,6 @@ export default function WeatherCard({ city, weather, loading, error }) {
       <h2 className="city-name">{city.name}</h2>
 
       <div className="weather-main">
-        {/* Left: icon + description */}
         <div className="weather-left">
           {weather.icon && (
             <img
@@ -29,7 +28,6 @@ export default function WeatherCard({ city, weather, loading, error }) {
           )}
         </div>
 
-        {/* Center: big temperature */}
         <div className="weather-center">
           {weather.temperature != null ? (
             <p className="temperature">{Math.round(weather.temperature)}°C</p>
@@ -38,7 +36,6 @@ export default function WeatherCard({ city, weather, loading, error }) {
           )}
         </div>
 
-        {/* Right: wind, pressure, uv */}
         <div className="weather-right">
           {weather.wind != null && (
             <p className="detail">💨 Wind: {weather.wind} km/h</p>

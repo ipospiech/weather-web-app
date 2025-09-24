@@ -35,7 +35,7 @@ const useWeatherData = (lat, lon) => {
         });
         setData(currentResponse.data);
 
-        const forecastUrl = `${METEOMATICS_URL}/today+1DT12:00:00Z--today+5DT12:00:00Z:P1D/t_2m:C,weather_symbol_24h:idx/${lat},${lon}/json`;
+        const forecastUrl = `${METEOMATICS_URL}/today+1DT12:00:00Z--today+5DT12:00:00Z:P1D/t_max_2m_24h:C,t_min_2m_24h:C,weather_symbol_24h:idx/${lat},${lon}/json`;
         const forecastResponse = await axios.get(forecastUrl, {
           auth: meteomaticsAuth,
         });
