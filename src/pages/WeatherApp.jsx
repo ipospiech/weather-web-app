@@ -8,12 +8,12 @@ import ForecastCard from "../components/ForecastCard";
 export default function WeatherApp() {
   const [selectedCity, setSelectedCity] = useState(null);
 
-  const { data, loading, error } = useWeatherData(
+  const { data, forecastData, loading, error } = useWeatherData(
     selectedCity?.lat,
     selectedCity?.lon
   );
 
-  let weather = {
+  const weather = {
     temperature: null,
     wind: null,
     pressure: null,
@@ -23,19 +23,62 @@ export default function WeatherApp() {
   };
 
   if (data) {
-    const getValue = (param) =>
+    const getValueWeather = (param) =>
       data.data.find((d) => d.parameter === param)?.coordinates?.[0]?.dates?.[0]
         ?.value;
 
-    weather.temperature = getValue("t_2m:C");
-    weather.wind = getValue("wind_speed_10m:kmh");
-    weather.pressure = getValue("msl_pressure:hPa");
-    weather.uv = getValue("uv:idx");
+    weather.temperature = getValueWeather("t_2m:C");
+    weather.wind = getValueWeather("wind_speed_10m:kmh");
+    weather.pressure = getValueWeather("msl_pressure:hPa");
+    weather.uv = getValueWeather("uv:idx");
 
-    const weatherSymbol = getValue("weather_symbol_1h:idx");
+    const weatherSymbol = getValueWeather("weather_symbol_1h:idx");
     const { icon, description } = getWeatherIcon(weatherSymbol);
     weather.icon = icon;
     weather.description = description;
+  }
+
+  let forecast = [];
+
+  if (forecastData) {
+    const getValueForecast = (param) =>
+      forecastData.data.find((d) => d.parameter === param);
+
+    const temperatureDay = getValueForecast("t_max_2m_24h:C");
+    const temperatureNight = getValueForecast("t_min_2m_24h:C");
+    const weatherSymbol = getValueForecast("weather_symbol_24h:idx");
+    const fiveDayDates = forecastData.data[0]?.coordinates?.[0]?.dates ?? [];
+
+    forecast = fiveDayDates.slice(0, 5).map((day, idx) => {
+      const isoDate = day.date;
+      const dateObj = new Date(isoDate);
+
+      const weekday = dateObj.toLocaleDateString(undefined, {
+        weekday: "short",
+      });
+      const dayMonth = dateObj.toLocaleDateString(undefined, {
+        day: "2-digit",
+        month: "short",
+      });
+
+      const dayTemp =
+        temperatureDay?.coordinates?.[0]?.dates?.[idx]?.value ?? null;
+      const nightTemp =
+        temperatureNight?.coordinates?.[0]?.dates?.[idx]?.value ?? null;
+      const weatherSymb =
+        weatherSymbol?.coordinates?.[0]?.dates?.[idx]?.value ?? null;
+
+      const { icon, description } = getWeatherIcon(weatherSymb);
+
+      return {
+        weekday,
+        dayMonth,
+        temperatureDay: dayTemp,
+        temperatureNight: nightTemp,
+        icon,
+        description,
+      };
+    });
   }
 
   return (
@@ -48,7 +91,7 @@ export default function WeatherApp() {
         loading={loading}
         error={error}
       />
-      <ForecastCard />
+      <ForecastCard forecast={forecast} />
     </div>
   );
 }
