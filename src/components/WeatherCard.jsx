@@ -11,7 +11,7 @@ export default function WeatherCard({ city, weather, loading, error }) {
   if (!city) return null;
 
   return (
-    <div className="weather-card">
+    <div className="weather-card" data-testid="current-weather">
       <h2 className="city-name">{city.name}</h2>
 
       <div className="weather-main">

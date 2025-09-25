@@ -25,7 +25,7 @@ const useCoordinates = (query) => {
 
       try {
         const response = await axios.get(
-          `${GEO_API_URL}/cities?minPopulation=100000&namePrefix=${encodeURIComponent(
+          `${GEO_API_URL}/cities?minPopulation=10000&namePrefix=${encodeURIComponent(
             query.trim()
           )}`,
           geoApiOptions
