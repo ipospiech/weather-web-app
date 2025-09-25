@@ -1,11 +1,18 @@
+import React from "react";
 import { useState } from "react";
-import useCoordinates from "../hooks/useCoordinates";
-import { useDebounce } from "../hooks/useDebounce";
+import useCoordinates from "../hooks/useCoordinates.js";
+import { useDebounce } from "../hooks/useDebounce.js";
+import type { CityCoordinates } from "../types/index.js";
 
-const SearchBar = ({ onSelectCity }) => {
+interface SearchBarProps {
+  onSelectCity: (city: CityCoordinates) => void;
+}
+
+const SearchBar: React.FC<SearchBarProps> = ({ onSelectCity }) => {
   const [query, setQuery] = useState("");
-  const [selectedCity, setSelectedCity] = useState(null);
-
+  const [selectedCity, setSelectedCity] = useState<CityCoordinates | null>(
+    null
+  );
   const debouncedQuery = useDebounce(query, 1000);
   const { cities, loading, error } = useCoordinates(debouncedQuery);
 
@@ -29,7 +36,7 @@ const SearchBar = ({ onSelectCity }) => {
       {showDropdown && (
         <ul className="search-results">
           {loading && <li className="search-status">Searching cities...</li>}
-          {error && (
+          {!!error && (
             <li className="search-status">
               Something went wrong, please try later
             </li>

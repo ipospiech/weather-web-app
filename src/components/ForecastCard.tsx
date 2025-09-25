@@ -1,4 +1,11 @@
-export default function ForecastCard({ forecast }) {
+import React from "react";
+import type { ForecastDay } from "../types/index.js";
+
+interface ForecastCardProps {
+  forecast: ForecastDay[];
+}
+
+export default function ForecastCard({ forecast }: ForecastCardProps) {
   if (!forecast || forecast.length === 0) return null;
 
   return (

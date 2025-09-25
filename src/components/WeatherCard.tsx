@@ -1,4 +1,18 @@
-export default function WeatherCard({ city, weather, loading, error }) {
+import React from "react";
+import type { City, Weather } from "../types/index.js";
+interface WeatherCardProps {
+  city: City | null;
+  weather: Weather;
+  loading: boolean;
+  error: Error | null;
+}
+
+export default function WeatherCard({
+  city,
+  weather,
+  loading,
+  error,
+}: WeatherCardProps) {
   if (loading) return <p className="weather-status">🌤 Loading weather...</p>;
   if (error) {
     console.error(error);

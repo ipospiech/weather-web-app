@@ -1,4 +1,5 @@
-import WeatherApp from "./pages/WeatherApp";
+import React from "react";
+import WeatherApp from "./pages/WeatherApp.js";
 
 function App() {
   return (

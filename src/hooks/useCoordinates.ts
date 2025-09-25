@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { GEO_API_URL, geoApiOptions } from "../utils/api";
+import { GEO_API_URL, geoApiOptions } from "../utils/api.js";
+import type { CityCoordinates, GeoApiCity } from "../types/interfaces.js";
 
 /**
  * Custom hook to fetch city coordinates based on a search query.
@@ -8,10 +9,16 @@ import { GEO_API_URL, geoApiOptions } from "../utils/api";
  * @returns {{ cities: Array<{ lat: number, lon: number, name: string }>, loading: boolean, error: any }}
  */
 
-const useCoordinates = (query) => {
-  const [cities, setCities] = useState([]);
+interface UseCoordinatesResult {
+  cities: CityCoordinates[];
+  loading: boolean;
+  error: unknown;
+}
+
+const useCoordinates = (query: string): UseCoordinatesResult => {
+  const [cities, setCities] = useState<CityCoordinates[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<unknown>(null);
 
   useEffect(() => {
     if (!query) {
@@ -32,11 +39,13 @@ const useCoordinates = (query) => {
         );
 
         if (response.data?.data?.length > 0) {
-          const matches = response.data.data.map((city) => ({
-            lat: city.latitude,
-            lon: city.longitude,
-            name: `${city.name}, ${city.countryCode}`,
-          }));
+          const matches: CityCoordinates[] = response.data.data.map(
+            (city: GeoApiCity) => ({
+              lat: city.latitude,
+              lon: city.longitude,
+              name: `${city.name}, ${city.countryCode}`,
+            })
+          );
           setCities(matches);
         } else {
           setCities([]);

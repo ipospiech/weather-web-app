@@ -1,13 +1,20 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import React from "react";
+import {
+  render,
+  screen,
+  waitFor,
+  within,
+  fireEvent,
+} from "@testing-library/react";
+import { describe, beforeEach, it, expect } from "vitest";
 import nock from "nock";
-import WeatherApp from "./WeatherApp";
-import { GEO_API_URL, METEOMATICS_URL } from "../utils/api";
+import WeatherApp from "./WeatherApp.js";
+import { GEO_API_URL, METEOMATICS_URL } from "../utils/api.js";
 import {
   CURRENT_WEATHER_LONDON,
   FORECAST_WEATHER_LONDON,
   GEO_MOCK_LONDON,
-} from "../mocks/weatherMocks";
+} from "../mocks/weatherMocks.js";
 
 describe("WeatherApp", () => {
   beforeEach(() => {
@@ -24,14 +31,14 @@ describe("WeatherApp", () => {
     render(<WeatherApp />);
 
     const input = screen.getByPlaceholderText("Enter city");
-    await userEvent.type(input, "London");
+    fireEvent.change(input, { target: { value: "London" } });
 
     const option = await screen.findByText(
       "London, GB",
       {},
       { timeout: 10000 }
     );
-    await userEvent.click(option);
+    fireEvent.click(option);
 
     await waitFor(() =>
       expect(screen.getByText("London, GB")).toBeInTheDocument()
@@ -67,7 +74,7 @@ describe("WeatherApp", () => {
     ];
 
     forecastDays.forEach((day, index) => {
-      const { temp, desc } = forecastData[index];
+      const { temp, desc } = forecastData[index]!;
       expect(day).toHaveTextContent(temp);
       expect(day).toHaveTextContent(desc);
     });
