@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import useCoordinates from "../hooks/useCoordinates.js";
+import { useCoordinates } from "../hooks/useCoordinates.js";
 import { useDebounce } from "../hooks/useDebounce.js";
 import type { CityCoordinates } from "../types/index.js";
 
@@ -14,11 +14,15 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSelectCity }) => {
     null
   );
   const debouncedQuery = useDebounce(query, 1000);
-  const { cities, loading, error } = useCoordinates(debouncedQuery);
+  const {
+    data: cities = [],
+    isLoading,
+    error,
+  } = useCoordinates(debouncedQuery);
 
   // Show dropdown if loading, error, cities exist, or query typed
   const showDropdown =
-    loading || error || (!selectedCity && (cities.length > 0 || query));
+    isLoading || error || (!selectedCity && (cities.length > 0 || query));
 
   return (
     <div className="search-container">
@@ -35,13 +39,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSelectCity }) => {
 
       {showDropdown && (
         <ul className="search-results">
-          {loading && <li className="search-status">Searching cities...</li>}
+          {isLoading && <li className="search-status">Searching cities...</li>}
           {!!error && (
             <li className="search-status">
               Something went wrong, please try later
             </li>
           )}
-          {!loading && !error && cities.length > 0
+          {!isLoading && !error && cities.length > 0
             ? cities.map((city, idx) => (
                 <li
                   key={idx}
@@ -54,7 +58,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSelectCity }) => {
                   {city.name}
                 </li>
               ))
-            : !loading &&
+            : !isLoading &&
               !error &&
               debouncedQuery && (
                 <li className="search-status">City not found</li>

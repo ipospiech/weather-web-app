@@ -15,6 +15,19 @@ import {
   FORECAST_WEATHER_LONDON,
   GEO_MOCK_LONDON,
 } from "../mocks/weatherMocks.js";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+
+const renderWithClient = (ui: React.ReactElement) => {
+  const queryClient = createTestQueryClient();
+  return render(
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+  );
+};
 
 describe("WeatherApp", () => {
   beforeEach(() => {
@@ -28,7 +41,7 @@ describe("WeatherApp", () => {
     nock(METEOMATICS_URL).get(/now/).reply(200, CURRENT_WEATHER_LONDON);
     nock(METEOMATICS_URL).get(/today/).reply(200, FORECAST_WEATHER_LONDON);
 
-    render(<WeatherApp />);
+    renderWithClient(<WeatherApp />);
 
     const input = screen.getByPlaceholderText("Enter city");
     fireEvent.change(input, { target: { value: "London" } });
