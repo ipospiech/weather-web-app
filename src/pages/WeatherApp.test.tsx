@@ -25,7 +25,7 @@ const createTestQueryClient = () =>
 const renderWithClient = (ui: React.ReactElement) => {
   const queryClient = createTestQueryClient();
   return render(
-    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>,
   );
 };
 
@@ -49,12 +49,12 @@ describe("WeatherApp", () => {
     const option = await screen.findByText(
       "London, GB",
       {},
-      { timeout: 10000 }
+      { timeout: 10000 },
     );
     fireEvent.click(option);
 
     await waitFor(() =>
-      expect(screen.getByText("London, GB")).toBeInTheDocument()
+      expect(screen.getByText("London, GB")).toBeInTheDocument(),
     );
 
     // Current weather

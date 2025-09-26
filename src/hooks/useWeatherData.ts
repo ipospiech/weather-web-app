@@ -26,7 +26,7 @@ interface UseWeatherDataResult {
 const useWeatherData = (lat?: number, lon?: number): UseWeatherDataResult => {
   const [data, setData] = useState<MeteomaticsResponse | null>(null);
   const [forecastData, setForecastData] = useState<MeteomaticsResponse | null>(
-    null
+    null,
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown>(null);
@@ -44,7 +44,7 @@ const useWeatherData = (lat?: number, lon?: number): UseWeatherDataResult => {
           currentUrl,
           {
             auth: meteomaticsAuth,
-          }
+          },
         );
         setData(currentResponse.data);
 
@@ -53,7 +53,7 @@ const useWeatherData = (lat?: number, lon?: number): UseWeatherDataResult => {
           forecastUrl,
           {
             auth: meteomaticsAuth,
-          }
+          },
         );
         setForecastData(forecastResponse.data);
       } catch (err) {

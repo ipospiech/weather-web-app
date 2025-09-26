@@ -4,6 +4,7 @@ import pluginReactHooks from "eslint-plugin-react-hooks";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import globals from "globals";
+import prettier from "eslint-plugin-prettier";
 
 export default [
   {
@@ -37,10 +38,12 @@ export default [
     plugins: {
       "@typescript-eslint": tseslint,
       "react-hooks": pluginReactHooks,
+      prettier,
     },
     rules: {
       ...tseslint.configs.recommended.rules,
       ...pluginReactHooks.configs.recommended.rules,
+      "prettier/prettier": "error",
     },
     settings: {
       react: { version: "detect" },

@@ -4,7 +4,7 @@ import type { QueryKey } from "@tanstack/react-query";
 export function useApiQuery<TData>(
   key: QueryKey,
   fetchFn: () => Promise<TData>,
-  enabled = true
+  enabled = true,
 ) {
   return useQuery<TData>({
     queryKey: key,

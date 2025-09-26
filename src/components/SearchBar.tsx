@@ -11,7 +11,7 @@ interface SearchBarProps {
 const SearchBar: React.FC<SearchBarProps> = ({ onSelectCity }) => {
   const [query, setQuery] = useState("");
   const [selectedCity, setSelectedCity] = useState<CityCoordinates | null>(
-    null
+    null,
   );
   const debouncedQuery = useDebounce(query, 1000);
   const {

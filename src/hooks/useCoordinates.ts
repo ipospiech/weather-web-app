@@ -8,9 +8,9 @@ const fetchCities = async (query: string): Promise<CityCoordinates[]> => {
 
   const { data } = await axios.get(
     `${GEO_API_URL}/cities?minPopulation=10000&namePrefix=${encodeURIComponent(
-      query.trim()
+      query.trim(),
     )}`,
-    geoApiOptions
+    geoApiOptions,
   );
 
   return (
@@ -26,7 +26,7 @@ export const useCoordinates = (query: string) => {
   return useApiQuery<CityCoordinates[]>(
     ["cities", query],
     () => fetchCities(query),
-    !!query
+    !!query,
   );
 };
 

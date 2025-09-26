@@ -14,12 +14,12 @@ import type {
 
 export default function WeatherApp() {
   const [selectedCity, setSelectedCity] = useState<CityCoordinates | null>(
-    null
+    null,
   );
 
   const { data, forecastData, loading, error } = useWeatherData(
     selectedCity?.lat,
-    selectedCity?.lon
+    selectedCity?.lon,
   );
 
   const weather: Weather = {
