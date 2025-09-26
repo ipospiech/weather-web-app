@@ -1,34 +1,38 @@
-import React, { useState } from "react";
-import SearchBar from "../components/SearchBar.js";
-import WeatherCard from "../components/WeatherCard.js";
-import useWeatherData from "../hooks/useWeatherData.js";
-import { getWeatherIcon } from "../utils/weatherIcons.js";
-import ForecastCard from "../components/ForecastCard.js";
+import React, { useState } from 'react';
+import SearchBar from '../components/SearchBar.js';
+import WeatherCard from '../components/WeatherCard.js';
+import useWeatherData from '../hooks/useWeatherData.js';
+import { getWeatherIcon } from '../utils/weatherIcons.js';
+import ForecastCard from '../components/ForecastCard.js';
 import type {
   CityCoordinates,
   ForecastDay,
   MeteomaticsCoordinateDate,
   MeteomaticsDataItem,
-  Weather,
-} from "../types/index.js";
+  Weather
+} from '../types/index.js';
 
 export default function WeatherApp() {
   const [selectedCity, setSelectedCity] = useState<CityCoordinates | null>(
-    null,
+    null
   );
 
-  const { data, forecastData, loading, error } = useWeatherData(
-    selectedCity?.lat,
-    selectedCity?.lon,
-  );
+  const {
+    data,
+    forecastData,
+    loadingCurrent,
+    loadingForecast,
+    errorCurrent,
+    errorForecast
+  } = useWeatherData(selectedCity?.lat, selectedCity?.lon);
 
   const weather: Weather = {
     temperature: null,
     wind: null,
     pressure: null,
     uv: null,
-    icon: "",
-    description: "",
+    icon: '',
+    description: ''
   };
 
   if (data) {
@@ -36,12 +40,12 @@ export default function WeatherApp() {
       data.data.find((d: MeteomaticsDataItem) => d.parameter === param)
         ?.coordinates?.[0]?.dates?.[0]?.value;
 
-    weather.temperature = getValueWeather("t_2m:C") ?? null;
-    weather.wind = getValueWeather("wind_speed_10m:kmh") ?? null;
-    weather.pressure = getValueWeather("msl_pressure:hPa") ?? null;
-    weather.uv = getValueWeather("uv:idx") ?? null;
+    weather.temperature = getValueWeather('t_2m:C') ?? null;
+    weather.wind = getValueWeather('wind_speed_10m:kmh') ?? null;
+    weather.pressure = getValueWeather('msl_pressure:hPa') ?? null;
+    weather.uv = getValueWeather('uv:idx') ?? null;
 
-    const weatherSymbol = getValueWeather("weather_symbol_1h:idx");
+    const weatherSymbol = getValueWeather('weather_symbol_1h:idx');
     const { icon, description } = getWeatherIcon(weatherSymbol);
     weather.icon = icon;
     weather.description = description;
@@ -53,9 +57,9 @@ export default function WeatherApp() {
     const getValueForecast = (param: string) =>
       forecastData.data.find((d: MeteomaticsDataItem) => d.parameter === param);
 
-    const temperatureDay = getValueForecast("t_max_2m_24h:C");
-    const temperatureNight = getValueForecast("t_min_2m_24h:C");
-    const weatherSymbol = getValueForecast("weather_symbol_24h:idx");
+    const temperatureDay = getValueForecast('t_max_2m_24h:C');
+    const temperatureNight = getValueForecast('t_min_2m_24h:C');
+    const weatherSymbol = getValueForecast('weather_symbol_24h:idx');
     const fiveDayDates = forecastData.data[0]?.coordinates?.[0]?.dates ?? [];
 
     forecast = fiveDayDates
@@ -65,11 +69,11 @@ export default function WeatherApp() {
         const dateObj = new Date(isoDate);
 
         const weekday = dateObj.toLocaleDateString(undefined, {
-          weekday: "short",
+          weekday: 'short'
         });
         const dayMonth = dateObj.toLocaleDateString(undefined, {
-          day: "2-digit",
-          month: "short",
+          day: '2-digit',
+          month: 'short'
         });
 
         const dayTemp =
@@ -87,7 +91,7 @@ export default function WeatherApp() {
           temperatureDay: dayTemp,
           temperatureNight: nightTemp,
           icon,
-          description,
+          description
         };
       });
   }
@@ -99,10 +103,14 @@ export default function WeatherApp() {
       <WeatherCard
         city={selectedCity}
         weather={weather}
-        loading={loading}
-        error={error as Error | null}
+        loading={loadingCurrent}
+        error={errorCurrent as Error | null}
       />
-      <ForecastCard forecast={forecast} />
+      <ForecastCard
+        forecast={forecast}
+        loading={loadingForecast}
+        error={errorForecast as Error | null}
+      />
     </div>
   );
 }

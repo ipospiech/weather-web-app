@@ -1,11 +1,20 @@
-import React from "react";
-import type { ForecastDay } from "../types/index.js";
+import React from 'react';
+import type { ForecastDay } from '../types/index.js';
 
 interface ForecastCardProps {
   forecast: ForecastDay[];
+  loading?: boolean;
+  error?: Error | null;
 }
 
-export default function ForecastCard({ forecast }: ForecastCardProps) {
+export default function ForecastCard({
+  forecast,
+  loading,
+  error
+}: ForecastCardProps) {
+  if (loading) return <p className="weather-status"> Loading forecast ... </p>;
+  if (error)
+    return <p className="weather-status">🚧 Failed to load forecast</p>;
   if (!forecast || forecast.length === 0) return null;
 
   return (
@@ -25,11 +34,11 @@ export default function ForecastCard({ forecast }: ForecastCardProps) {
             <p className="forecast-desc">{day.description}</p>
           </div>
           <p className="forecast-temp">
-            {day.temperatureDay !== null ? Math.round(day.temperatureDay) : "-"}
-            ° /{" "}
+            {day.temperatureDay !== null ? Math.round(day.temperatureDay) : '-'}
+            ° /{' '}
             {day.temperatureNight !== null
               ? Math.round(day.temperatureNight)
-              : "-"}
+              : '-'}
             °
           </p>
         </div>

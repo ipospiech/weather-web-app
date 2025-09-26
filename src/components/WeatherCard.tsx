@@ -1,5 +1,5 @@
-import React from "react";
-import type { City, Weather } from "../types/index.js";
+import React from 'react';
+import type { City, Weather } from '../types/index.js';
 interface WeatherCardProps {
   city: City | null;
   weather: Weather;
@@ -11,9 +11,9 @@ export default function WeatherCard({
   city,
   weather,
   loading,
-  error,
+  error
 }: WeatherCardProps) {
-  if (loading) return <p className="weather-status">🌤 Loading weather...</p>;
+  if (loading) return <p className="weather-status"> Loading weather ... </p>;
   if (error) {
     console.error(error);
     return (

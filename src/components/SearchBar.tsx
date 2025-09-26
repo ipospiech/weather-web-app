@@ -1,23 +1,23 @@
-import React from "react";
-import { useState } from "react";
-import { useCoordinates } from "../hooks/useCoordinates.js";
-import { useDebounce } from "../hooks/useDebounce.js";
-import type { CityCoordinates } from "../types/index.js";
+import React from 'react';
+import { useState } from 'react';
+import { useCoordinates } from '../hooks/useCoordinates.js';
+import { useDebounce } from '../hooks/useDebounce.js';
+import type { CityCoordinates } from '../types/index.js';
 
 interface SearchBarProps {
   onSelectCity: (city: CityCoordinates) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSelectCity }) => {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
   const [selectedCity, setSelectedCity] = useState<CityCoordinates | null>(
-    null,
+    null
   );
   const debouncedQuery = useDebounce(query, 1000);
   const {
     data: cities = [],
     isLoading,
-    error,
+    error
   } = useCoordinates(debouncedQuery);
 
   // Show dropdown if loading, error, cities exist, or query typed
