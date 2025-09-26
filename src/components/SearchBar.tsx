@@ -56,7 +56,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSelectCity }) => {
               ))
             : !loading &&
               !error &&
-              query && <li className="search-status">City not found</li>}
+              debouncedQuery && (
+                <li className="search-status">City not found</li>
+              )}
         </ul>
       )}
     </div>

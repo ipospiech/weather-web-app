@@ -13,4 +13,7 @@ export default defineConfig({
       reporter: ["text", "html"],
     },
   },
+  build: {
+    minify: "esbuild",
+  },
 });
