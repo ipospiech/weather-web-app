@@ -107,7 +107,15 @@
   font-weight: 700;
   margin: 0;
   color: #111827;
-  text-align: left;
+  text-align: center;
+}
+
+.today-label {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #0369a1;
+  margin: 0 0 8px 0;
+  text-align: center;
 }
 
 .weather-main {
@@ -115,7 +123,7 @@
   align-items: stretch;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0 10px;
+  padding: 0 50px;
 }
 
 .weather-left {
@@ -231,7 +239,8 @@
     gap: 10px;
   }
 
-  .city-name {
+  .city-name,
+  .today-label {
     width: 100%;
     text-align: center;
   }
@@ -243,6 +252,7 @@
     align-items: center;
     gap: 10px;
     width: 100%;
+    padding: 10px;
   }
 
   .weather-left,
@@ -251,10 +261,12 @@
     justify-content: center;
     margin-bottom: 10px;
   }
+
   .weather-right {
     align-items: flex-start;
     justify-content: center;
     margin-bottom: 10px;
+    font-size: smaller;
   }
 
   .temperature {

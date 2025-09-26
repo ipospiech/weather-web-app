@@ -27,6 +27,7 @@ export default function WeatherCard({
   return (
     <div className="weather-card" data-testid="current-weather">
       <h2 className="city-name">{city.name}</h2>
+      <p className="today-label">Today</p>
 
       <div className="weather-main">
         <div className="weather-left">
