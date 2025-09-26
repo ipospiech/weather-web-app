@@ -93,4 +93,31 @@ describe('WeatherApp', () => {
       expect(day).toHaveTextContent(desc);
     });
   });
+
+  it('renders an error message if the weather API fails', async () => {
+    nock(GEO_API_URL)
+      .get(/cities/)
+      .reply(200, GEO_MOCK_LONDON);
+    nock(METEOMATICS_URL).get(/now/).reply(500);
+    nock(METEOMATICS_URL).get(/today/).reply(500);
+
+    renderWithClient(<WeatherApp />);
+
+    const input = screen.getByPlaceholderText('Enter city');
+    fireEvent.change(input, { target: { value: 'London' } });
+
+    const option = await screen.findByText(
+      'London, GB',
+      {},
+      { timeout: 10000 }
+    );
+    fireEvent.click(option);
+
+    await waitFor(() =>
+      expect(
+        screen.getByText('🚧 Something went wrong, please try later')
+      ).toBeInTheDocument()
+    );
+    expect(screen.queryByTestId('current-weather')).toBeNull();
+  });
 });
