@@ -1,1 +1,1 @@
-module.exports = require('./src/netlify/functions/geo-proxy.js');
+module.exports = require('./netlify/functions/geo-proxy.js')

@@ -1,1 +1,1 @@
-module.exports = require('./src/netlify/functions/weather-proxy.js');
+module.exports = require('./netlify/functions/weather-proxy.js')
