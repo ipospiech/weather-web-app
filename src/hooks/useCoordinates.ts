@@ -1,25 +1,14 @@
 import axios from 'axios';
 import { useApiQuery } from './useApiQuery.js';
-import { GEO_API_URL, geoApiOptions } from '../utils/api.js';
-import type { CityCoordinates, GeoApiCity } from '../types/interfaces.js';
+import type { CityCoordinates } from '../types/interfaces.js';
 
 const fetchCities = async (query: string): Promise<CityCoordinates[]> => {
   if (!query) return [];
 
-  const { data } = await axios.get(
-    `${GEO_API_URL}/cities?minPopulation=10000&namePrefix=${encodeURIComponent(
-      query.trim()
-    )}`,
-    geoApiOptions
+  const res = await axios.get(
+    `/.netlify/functions/geo-proxy?q=${encodeURIComponent(query)}`
   );
-
-  return (
-    data.data?.map((city: GeoApiCity) => ({
-      lat: city.latitude,
-      lon: city.longitude,
-      name: `${city.name}, ${city.countryCode}`
-    })) || []
-  );
+  return res.data;
 };
 
 export const useCoordinates = (query: string) => {
