@@ -32,7 +32,7 @@ This project includes both **unit tests** and **end-to-end (E2E) tests** to ensu
 npm run test:coverage
 ```
 
-<details> <summary>See unit test report</summary>
+<details> <summary>📈 **See unit test report**</summary>
 
 ![Unit tests coverage report](screenshots/image.png)
 
