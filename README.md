@@ -1,17 +1,23 @@
-# React + Vite
+# JustWeather 🌐
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Fast, sleek, and fully responsive — check the weather anywhere, anytime.  
+Instant city search, clear forecasts, and current conditions — all with a secure serverless backend.
 
-Currently, two official plugins are available:
+## 🛠️ Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This application is built with a React 19 + Vite stack for fast development, responsive UI, and optimized performance, while leveraging React Query for efficient caching and Netlify serverless functions to securely handle API keys and reduce backend latency.
 
-## Expanding the ESLint configuration
+- **React 19** – Component-based architecture for a responsive, dynamic UI.
+- **Vite** – Lightning-fast build tool for efficient development.
+- **TypeScript** – Type safety and improved developer experience.
+- **React Query** – Caching and fetching of API data for instant responses.
+- **Axios** – HTTP requests to external APIs.
+- **Netlify Functions** – Serverless backend to secure API keys and proxy external requests.
+- **ESLint + Prettier** – Enforced code quality and consistent formatting.
+- **Cypress & Vitest** – End-to-end and unit testing for reliability.
+- **Rollup Visualizer** – Helps inspect bundle size and structure. More educational than necessary for a project of this scale.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-
-## Testing
+## 🧪 Testing
 
 This project includes both **unit tests** and **end-to-end (E2E) tests** to ensure the Weather app works correctly.
 
@@ -26,7 +32,9 @@ This project includes both **unit tests** and **end-to-end (E2E) tests** to ensu
 npm run test:coverage
 ```
 
-![Unit tests coverage report](image.png)
+<details> <summary>See unit test report</summary>
+![Unit tests coverage report](screenshots/image.png)
+</details>
 
 ### End-to-End (E2E) Tests
 
@@ -57,9 +65,28 @@ This command will:
 3. Merge coverage
 4. Generate an HTML report in /coverage and open it in your default browser
 
-![Combined coverage report](image-1.png)
+![Combined coverage report](screenshots/image-1.png)
 
-## Deployment
+## ♿ Accessibility
+
+**JustWeather** is designed with accessibility in mind:
+
+- **Keyboard navigation** – All interactive elements (search input, city options) are focusable and can be selected via **Enter** or **Space** keys.
+- **ARIA roles & attributes** – Search results, errors, and loading states use proper roles (`role="option"`, `role="alert"`, `role="status"`) with `aria-live` for dynamic updates.
+- **Semantic UI** – Headings, lists, and labels follow semantic HTML for assistive technologies.
+- **Visual & non-visual feedback** – Icons include `aria-hidden` where decorative, and text alternatives for weather descriptions.
+
+Accessibility was verified with **Lighthouse**, achieving **100% accessibility score**.
+
+**Desktop:**
+
+![Lighthouse Navigation Report Desktop](screenshots/image-2.png)
+
+**Mobile:**
+
+![Lighthouse Navigation Report Mobile](screenshots/image-3.png)
+
+## 🚀 Deployment
 
 The Weather app is deployed on **Netlify** with a **serverless backend** to securely handle API keys and sensitive credentials.
 
@@ -94,3 +121,51 @@ To securely access the APIs:
 ```bash
 netlify dev
 ```
+
+## ⚡ Performance
+
+The application was audited with **Lighthouse** and achieved a **100% performance score**. Local DevTools metrics indicate a fast, responsive, and visually stable user experience.
+
+### Local Performance Metrics
+
+- \*\*Largest Contentful Paint (LCP): main content (`h1.app-title`) loads quickly, comfortably under the 2.5 s threshold for good performance.
+- \*\*Cumulative Layout Shift (CLS): no unexpected layout shifts, providing a visually stable experience.
+- \*\*Interaction to Next Paint (INP): user interactions (typing/selecting city) respond immediately, under the 200 ms threshold.
+
+![Performanse local metrics report](screenshots/image-8.png)
+
+### Implemented Optimizations
+
+- **React Query caching** (`staleTime: 5 min`) for `useCoordinates` ensures repeat searches return instantly without new API calls.
+- **Debounced search input** (`1000ms`) prevents exceeding Geo API rate limits while maintaining responsive suggestions.
+- **Preloaded Meteomatics data** reduces redundant fetch delays.
+- **Serverless Netlify Functions** secure API keys and minimize latency.
+- **Optimized Vite build** with `esbuild` and efficient asset handling.
+- **Shared weather icons**: single 64×64 PNG set used for current and forecast weather, rendered responsively (40×40 in forecast on desktop).
+- **Bundle analysis**: main JS dominated by `react-dom-client.production.js` (~519 KB, ~70%), typical for React apps, but overall build is lightweight for a SPA.  
+  To open analysis:
+
+```bash
+npx vite build
+```
+
+### Data State Management
+
+The app uses a component-driven approach with custom hooks and selective caching:
+
+- **React Query** is used only for useCoordinates (city search) to cache repeated queries for 5 minutes.
+- **Weather data** is always fetched fresh to ensure up-to-date information.
+- **Custom hooks** encapsulate fetching, caching, and error handling, keeping components focused on rendering.
+- This approach avoids global state libraries (like Redux), making the app **lightweight, maintainable, and efficient**.
+
+### Constraints
+
+- Free API plan (**1 request/sec, max 300/day**) limits stress testing at high load.
+
+![Lighthouse Timespan Report Desktop](screenshots/image-4.png)
+
+![Lighthouse Timespan Report Mobile](screenshots/image-5.png)
+
+![Lighthouse Snapshot Report Desktop](screenshots/image-6.png)
+
+![Lighthouse Snapshot Report Mobile](screenshots/image-7.png)
