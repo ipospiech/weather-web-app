@@ -1,14 +1,13 @@
 import type { Handler } from '@netlify/functions';
 import axios from 'axios';
 import type { GeoApiCity } from '../../src/types/interfaces.js';
-import { GEO_API_URL } from '../../src/utils/api.js';
+import { GEO_API_URL, GEO_API_KEY } from './config.js';
 
 const handler: Handler = async (event) => {
   const query = event.queryStringParameters?.q;
   if (!query) return { statusCode: 400, body: 'Missing query' };
 
   try {
-    const GEO_API_KEY = process.env.ITE_GEO_API_KEY;
     const url = `${GEO_API_URL}/cities?minPopulation=10000&namePrefix=${encodeURIComponent(query)}`;
 
     const res = await axios.get(url, {

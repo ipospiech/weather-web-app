@@ -1,6 +1,6 @@
 import type { Handler } from '@netlify/functions';
 import axios from 'axios';
-import { METEOMATICS_URL } from '../../src/utils/api.js';
+import { METEOMATICS_URL } from './config.js';
 
 const handler: Handler = async (event) => {
   const lat = event.queryStringParameters?.lat;
