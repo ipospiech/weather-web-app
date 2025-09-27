@@ -32,7 +32,7 @@ This project includes both **unit tests** and **end-to-end (E2E) tests** to ensu
 npm run test:coverage
 ```
 
-<details> <summary>📈 **See unit test report**</summary>
+<details> <summary>📈 SEE UNIT TESTS REPORT</summary>
 
 ![Unit tests coverage report](screenshots/image.png)
 
@@ -67,7 +67,11 @@ This command will:
 3. Merge coverage
 4. Generate an HTML report in /coverage and open it in your default browser
 
+<details> <summary>📈 SEE E2E TESTS REPORT</summary>
+
 ![Combined coverage report](screenshots/image-1.png)
+
+</details>
 
 ## ♿ Accessibility
 
@@ -80,6 +84,8 @@ This command will:
 
 Accessibility was verified with **Lighthouse**, achieving **100% accessibility score**.
 
+<details> <summary>📈 SEE LIGHTHOUSE NAVIGATION PERFORMANSE REPORT</summary>
+
 **Desktop:**
 
 ![Lighthouse Navigation Report Desktop](screenshots/image-2.png)
@@ -87,6 +93,8 @@ Accessibility was verified with **Lighthouse**, achieving **100% accessibility s
 **Mobile:**
 
 ![Lighthouse Navigation Report Mobile](screenshots/image-3.png)
+
+</details>
 
 ## 🚀 Deployment
 
@@ -134,7 +142,11 @@ The application was audited with **Lighthouse** and achieved a **100% performanc
 - \*\*Cumulative Layout Shift (CLS): no unexpected layout shifts, providing a visually stable experience.
 - \*\*Interaction to Next Paint (INP): user interactions (typing/selecting city) respond immediately, under the 200 ms threshold.
 
+<details> <summary>📈 SEE LOCAL METRICS PERFORMANSE REPORT</summary>
+
 ![Performanse local metrics report](screenshots/image-8.png)
+
+</details>
 
 ### Implemented Optimizations
 
@@ -164,6 +176,8 @@ The app uses a component-driven approach with custom hooks and selective caching
 
 - Free API plan (**1 request/sec, max 300/day**) limits stress testing at high load.
 
+<details> <summary>📈 SEE LIGHTHOUSE TIMESPAN PERFORMANSE REPORT</summary>
+
 ![Lighthouse Timespan Report Desktop](screenshots/image-4.png)
 
 ![Lighthouse Timespan Report Mobile](screenshots/image-5.png)
@@ -171,3 +185,5 @@ The app uses a component-driven approach with custom hooks and selective caching
 ![Lighthouse Snapshot Report Desktop](screenshots/image-6.png)
 
 ![Lighthouse Snapshot Report Mobile](screenshots/image-7.png)
+
+</details>
