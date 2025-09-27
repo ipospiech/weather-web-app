@@ -1,5 +1,6 @@
 import React from 'react';
 import type { City, Weather } from '../types/index.js';
+
 interface WeatherCardProps {
   city: City | null;
   weather: Weather;
@@ -13,12 +14,20 @@ export default function WeatherCard({
   loading,
   error
 }: WeatherCardProps) {
-  if (loading) return <p className="weather-status"> Loading weather ... </p>;
+  if (loading)
+    return (
+      <p className="weather-status" role="status" aria-live="polite">
+        {' '}
+        Loading weather ...{' '}
+      </p>
+    );
+
   if (error) {
     console.error(error);
     return (
-      <p className="weather-status">
-        🚧 Something went wrong, please try later
+      <p className="weather-status" role="alert">
+        <span aria-hidden="true">🚧</span> Something went wrong, please try
+        later
       </p>
     );
   }
@@ -53,13 +62,22 @@ export default function WeatherCard({
 
         <div className="weather-right">
           {weather.wind != null && (
-            <p className="detail">💨 Wind: {weather.wind} km/h</p>
+            <p className="detail">
+              {' '}
+              <span aria-hidden="true">💨</span> Wind: {weather.wind} km/h
+            </p>
           )}
           {weather.pressure != null && (
-            <p className="detail">🔽 Pressure: {weather.pressure} hPa</p>
+            <p className="detail">
+              {' '}
+              <span aria-hidden="true">🔽</span> Pressure: {weather.pressure}{' '}
+              hPa
+            </p>
           )}
           {weather.uv != null && (
-            <p className="detail">☀️ UV Index: {weather.uv}</p>
+            <p className="detail">
+              <span aria-hidden="true">☀️</span> UV Index: {weather.uv}
+            </p>
           )}
         </div>
       </div>

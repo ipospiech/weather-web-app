@@ -98,7 +98,9 @@ export default function WeatherApp() {
 
   return (
     <div className="app-container">
-      <h1 className="app-title">🌐 JustWeather</h1>
+      <h1 className="app-title">
+        <span aria-hidden="true">🌐</span> JustWeather
+      </h1>
       <SearchBar onSelectCity={setSelectedCity} />
       <WeatherCard
         city={selectedCity}

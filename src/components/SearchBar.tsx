@@ -34,14 +34,19 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSelectCity }) => {
           setSelectedCity(null);
         }}
         placeholder="Enter city"
+        aria-label="Search for a city"
         className="search-input"
       />
 
       {showDropdown && (
-        <ul className="search-results">
-          {isLoading && <li className="search-status">Searching cities...</li>}
+        <ul className="search-results" role="listbox">
+          {isLoading && (
+            <li className="search-status" role="status" aria-live="polite">
+              Searching cities...
+            </li>
+          )}
           {!!error && (
-            <li className="search-status">
+            <li className="search-status" role="alert">
               Something went wrong, please try later
             </li>
           )}
@@ -49,10 +54,18 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSelectCity }) => {
             ? cities.map((city, idx) => (
                 <li
                   key={idx}
+                  role="option"
+                  tabIndex={0}
                   className="search-item"
                   onClick={() => {
                     setSelectedCity(city);
                     onSelectCity(city);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      setSelectedCity(city);
+                      onSelectCity(city);
+                    }
                   }}
                 >
                   {city.name}
@@ -61,7 +74,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSelectCity }) => {
             : !isLoading &&
               !error &&
               debouncedQuery && (
-                <li className="search-status">City not found</li>
+                <li className="search-status" role="status" aria-live="polite">
+                  City not found
+                </li>
               )}
         </ul>
       )}

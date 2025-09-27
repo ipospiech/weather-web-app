@@ -12,9 +12,18 @@ export default function ForecastCard({
   loading,
   error
 }: ForecastCardProps) {
-  if (loading) return <p className="weather-status"> Loading forecast ... </p>;
+  if (loading)
+    return (
+      <p className="weather-status" role="status" aria-live="polite">
+        Loading forecast ...
+      </p>
+    );
   if (error)
-    return <p className="weather-status">🚧 Failed to load forecast</p>;
+    return (
+      <p className="weather-status" role="alert">
+        <span aria-hidden="true">🚧</span> Failed to load forecast
+      </p>
+    );
   if (!forecast || forecast.length === 0) return null;
 
   return (

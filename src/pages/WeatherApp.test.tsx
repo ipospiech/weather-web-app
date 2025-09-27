@@ -29,12 +29,25 @@ const renderWithClient = (ui: React.ReactElement) => {
   );
 };
 
+vi.mock('../hooks/useDebounce.js', () => ({
+  useDebounce: (value: string) => value
+}));
+
 describe('WeatherApp', () => {
   beforeEach(() => {
     nock.cleanAll();
   });
 
-  it('renders weather for London with current and forecast data', async () => {
+  it('renders the app title', () => {
+    renderWithClient(<WeatherApp />);
+    const heading = screen.getByRole('heading', {
+      level: 1,
+      name: 'JustWeather'
+    });
+    expect(heading).toBeInTheDocument();
+  });
+
+  it('displays current weather after selecting a city', async () => {
     nock(GEO_API_URL)
       .get(/cities/)
       .reply(200, GEO_MOCK_LONDON);
@@ -57,24 +70,46 @@ describe('WeatherApp', () => {
       expect(screen.getByText('London, GB')).toBeInTheDocument()
     );
 
-    // Current weather
     await waitFor(() => expect(screen.getByText('Today')).toBeInTheDocument());
     const weatherCard = screen.getByTestId('current-weather');
     const currentWeather = within(weatherCard);
 
     const expectedCurrentValues = [
       '13°C',
-      '💨 Wind: 11.5 km/h',
-      '🔽 Pressure: 1026 hPa',
-      '☀️ UV Index: 1',
+      'Wind: 11.5 km/h',
+      'Pressure: 1026 hPa',
+      'UV Index: 1',
       'Clear sky'
     ];
 
     expectedCurrentValues.forEach((text) => {
       expect(currentWeather.getByText(text)).toBeInTheDocument();
     });
+  });
 
-    // Forecast
+  it('renders forecast data for selected city', async () => {
+    nock(GEO_API_URL)
+      .get(/cities/)
+      .reply(200, GEO_MOCK_LONDON);
+    nock(METEOMATICS_URL).get(/now/).reply(200, CURRENT_WEATHER_LONDON);
+    nock(METEOMATICS_URL).get(/today/).reply(200, FORECAST_WEATHER_LONDON);
+
+    renderWithClient(<WeatherApp />);
+
+    const input = screen.getByPlaceholderText('Enter city');
+    fireEvent.change(input, { target: { value: 'London' } });
+
+    const option = await screen.findByText(
+      'London, GB',
+      {},
+      { timeout: 10000 }
+    );
+    fireEvent.click(option);
+
+    await waitFor(() =>
+      expect(screen.getByText('London, GB')).toBeInTheDocument()
+    );
+
     const forecastContainer = screen.getByTestId('forecast');
     const forecastDays =
       within(forecastContainer).getAllByTestId('forecast-day');
@@ -115,9 +150,31 @@ describe('WeatherApp', () => {
 
     await waitFor(() =>
       expect(
-        screen.getByText('🚧 Something went wrong, please try later')
+        screen.getByText('Something went wrong, please try later')
       ).toBeInTheDocument()
     );
     expect(screen.queryByTestId('current-weather')).toBeNull();
+  });
+
+  it('allows selecting a city with keyboard (Space key)', async () => {
+    nock(GEO_API_URL)
+      .get(/cities/)
+      .reply(200, GEO_MOCK_LONDON);
+    nock(METEOMATICS_URL).get(/now/).reply(200, CURRENT_WEATHER_LONDON);
+    nock(METEOMATICS_URL).get(/today/).reply(200, FORECAST_WEATHER_LONDON);
+
+    renderWithClient(<WeatherApp />);
+
+    const input = screen.getByLabelText('Search for a city');
+    fireEvent.change(input, { target: { value: 'london' } });
+
+    const option = await screen.findByRole('option', { name: 'London, GB' });
+
+    option.focus();
+    fireEvent.keyDown(option, { key: ' ', code: 'Space' });
+
+    await waitFor(() =>
+      expect(screen.getByTestId('current-weather')).toBeInTheDocument()
+    );
   });
 });
