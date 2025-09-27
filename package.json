@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:watch": "vitest --watch",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "cypress:open": "cypress open",
+    "test:e2e": "cypress run",
+    "coverage": "npm run test:coverage && npm run test:e2e && npx nyc merge .nyc_output coverage/coverage-final.json && npx nyc report --reporter=html --report-dir coverage && start coverage/index.html"
   },
   "dependencies": {
     "@netlify/edge-functions": "^2.18.1",
@@ -20,6 +23,7 @@
     "react-dom": "^19.1.1"
   },
   "devDependencies": {
+    "@cypress/code-coverage": "^3.14.6",
     "@eslint/js": "^9.36.0",
     "@netlify/functions": "^4.2.6",
     "@testing-library/jest-dom": "^6.8.0",
@@ -31,6 +35,7 @@
     "@typescript-eslint/parser": "^8.44.1",
     "@vitejs/plugin-react": "^5.0.3",
     "@vitest/coverage-istanbul": "^3.2.4",
+    "cypress": "^15.3.0",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-define-config": "^2.1.0",
@@ -39,13 +44,16 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.4.0",
+    "istanbul-lib-coverage": "^3.2.2",
     "jsdom": "^27.0.0",
     "netlify-cli": "^23.8.0",
     "nock": "^14.0.10",
+    "nyc": "^17.1.0",
     "prettier": "^3.6.2",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.44.1",
     "vite": "^7.1.7",
+    "vite-plugin-istanbul": "^7.2.0",
     "vitest": "^3.2.4"
   }
 }
