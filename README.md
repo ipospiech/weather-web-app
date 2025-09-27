@@ -33,7 +33,9 @@ npm run test:coverage
 ```
 
 <details> <summary>See unit test report</summary>
+
 ![Unit tests coverage report](screenshots/image.png)
+
 </details>
 
 ### End-to-End (E2E) Tests
