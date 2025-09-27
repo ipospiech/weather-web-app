@@ -101,16 +101,19 @@ export const symbolMap = {
     icon: '/icons/wsymbol_0074_dust_sand_night.png',
     description: 'Sandstorm'
   }
-};
+} as const;
+
+export type WeatherSymbol = keyof typeof symbolMap;
 
 /**
  * Returns icon and text for a given weather symbol.
- * @param {number} weatherSymbol
+ * @param {WeatherSymbol |number} weatherSymbol
  * @returns {{icon: string, description: string}}
  */
-export function getWeatherIcon(weatherSymbol) {
+export function getWeatherIcon(weatherSymbol: number) {
+  const key = weatherSymbol as WeatherSymbol;
   return (
-    symbolMap[weatherSymbol] || {
+    symbolMap[key] || {
       icon: '/icons/wsymbol_0999_unknown.png',
       description: ''
     }
