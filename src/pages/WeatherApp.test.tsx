@@ -7,9 +7,7 @@ import {
   fireEvent
 } from '@testing-library/react';
 import { describe, beforeEach, it, expect } from 'vitest';
-import nock from 'nock';
 import WeatherApp from './WeatherApp.js';
-import { GEO_API_URL, METEOMATICS_URL } from '../utils/api.js';
 import {
   CURRENT_WEATHER_LONDON,
   FORECAST_WEATHER_LONDON,
@@ -33,9 +31,42 @@ vi.mock('../hooks/useDebounce.js', () => ({
   useDebounce: (value: string) => value
 }));
 
+vi.mock('../hooks/useCoordinates.js', () => ({
+  useCoordinates: () => ({
+    data: GEO_MOCK_LONDON.data.map((city) => ({
+      lat: city.latitude,
+      lon: city.longitude,
+      name: `${city.name}, ${city.countryCode}`
+    })),
+    isLoading: false
+  })
+}));
+
+vi.mock('../hooks/useWeatherData.js', () => ({
+  default: () => ({
+    data: CURRENT_WEATHER_LONDON,
+    forecastData: FORECAST_WEATHER_LONDON,
+    loadingCurrent: false,
+    loadingForecast: false,
+    errorCurrent: null,
+    errorForecast: null
+  })
+}));
+
+vi.mock('react-geolocated', () => ({
+  useGeolocated: () => ({
+    coords: {
+      latitude: 51.5074,
+      longitude: -0.1278
+    },
+    isGeolocationAvailable: true,
+    isGeolocationEnabled: true
+  })
+}));
+
 describe('WeatherApp', () => {
   beforeEach(() => {
-    nock.cleanAll();
+    vi.clearAllMocks();
   });
 
   it('renders the app title', () => {
@@ -47,13 +78,18 @@ describe('WeatherApp', () => {
     expect(heading).toBeInTheDocument();
   });
 
-  it('displays current weather after selecting a city', async () => {
-    nock(GEO_API_URL)
-      .get(/cities/)
-      .reply(200, GEO_MOCK_LONDON);
-    nock(METEOMATICS_URL).get(/now/).reply(200, CURRENT_WEATHER_LONDON);
-    nock(METEOMATICS_URL).get(/today/).reply(200, FORECAST_WEATHER_LONDON);
+  it('sets current location automatically on mount', async () => {
+    renderWithClient(<WeatherApp />);
 
+    await waitFor(() =>
+      expect(screen.getByText('Current Location')).toBeInTheDocument()
+    );
+
+    const weatherCard = screen.getByTestId('current-weather');
+    expect(weatherCard).toBeInTheDocument();
+  });
+
+  it('displays current weather after selecting a city', async () => {
     renderWithClient(<WeatherApp />);
 
     const input = screen.getByPlaceholderText('Enter city');
@@ -88,12 +124,6 @@ describe('WeatherApp', () => {
   });
 
   it('renders forecast data for selected city', async () => {
-    nock(GEO_API_URL)
-      .get(/cities/)
-      .reply(200, GEO_MOCK_LONDON);
-    nock(METEOMATICS_URL).get(/now/).reply(200, CURRENT_WEATHER_LONDON);
-    nock(METEOMATICS_URL).get(/today/).reply(200, FORECAST_WEATHER_LONDON);
-
     renderWithClient(<WeatherApp />);
 
     const input = screen.getByPlaceholderText('Enter city');
@@ -129,14 +159,37 @@ describe('WeatherApp', () => {
     });
   });
 
-  it('renders an error message if the weather API fails', async () => {
-    nock(GEO_API_URL)
-      .get(/cities/)
-      .reply(200, GEO_MOCK_LONDON);
-    nock(METEOMATICS_URL).get(/now/).reply(500);
-    nock(METEOMATICS_URL).get(/today/).reply(500);
-
+  it('allows selecting a city with keyboard (Space key)', async () => {
     renderWithClient(<WeatherApp />);
+
+    const input = screen.getByLabelText('Search for a city');
+    fireEvent.change(input, { target: { value: 'london' } });
+
+    const option = await screen.findByRole('option', { name: 'London, GB' });
+
+    option.focus();
+    fireEvent.keyDown(option, { key: ' ', code: 'Space' });
+
+    await waitFor(() =>
+      expect(screen.getByTestId('current-weather')).toBeInTheDocument()
+    );
+  });
+
+  it('renders an error message if the weather API fails', async () => {
+    vi.resetModules();
+    vi.doMock('../hooks/useWeatherData.js', () => ({
+      default: () => ({
+        data: null,
+        forecastData: null,
+        loadingCurrent: false,
+        loadingForecast: false,
+        errorCurrent: true,
+        errorForecast: true
+      })
+    }));
+    const { default: WeatherAppWithError } = await import('./WeatherApp.js');
+
+    renderWithClient(<WeatherAppWithError />);
 
     const input = screen.getByPlaceholderText('Enter city');
     fireEvent.change(input, { target: { value: 'London' } });
@@ -156,25 +209,21 @@ describe('WeatherApp', () => {
     expect(screen.queryByTestId('current-weather')).toBeNull();
   });
 
-  it('allows selecting a city with keyboard (Space key)', async () => {
-    nock(GEO_API_URL)
-      .get(/cities/)
-      .reply(200, GEO_MOCK_LONDON);
-    nock(METEOMATICS_URL).get(/now/).reply(200, CURRENT_WEATHER_LONDON);
-    nock(METEOMATICS_URL).get(/today/).reply(200, FORECAST_WEATHER_LONDON);
+  it('renders correctly when geolocation is not available', async () => {
+    vi.doMock('react-geolocated', () => ({
+      useGeolocated: () => ({
+        coords: null,
+        isGeolocationAvailable: false,
+        isGeolocationEnabled: false
+      })
+    }));
 
-    renderWithClient(<WeatherApp />);
+    const { default: WeatherAppWithNoGeo } = await import('./WeatherApp.js');
+    renderWithClient(<WeatherAppWithNoGeo />);
 
-    const input = screen.getByLabelText('Search for a city');
-    fireEvent.change(input, { target: { value: 'london' } });
+    expect(screen.queryByText('Current Location')).toBeNull();
+    expect(screen.queryByTestId('current-weather')).toBeNull();
 
-    const option = await screen.findByRole('option', { name: 'London, GB' });
-
-    option.focus();
-    fireEvent.keyDown(option, { key: ' ', code: 'Space' });
-
-    await waitFor(() =>
-      expect(screen.getByTestId('current-weather')).toBeInTheDocument()
-    );
+    expect(screen.getByPlaceholderText('Enter city')).toBeInTheDocument();
   });
 });

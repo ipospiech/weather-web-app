@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchBar from '../components/SearchBar.js';
 import WeatherCard from '../components/WeatherCard.js';
 import useWeatherData from '../hooks/useWeatherData.js';
@@ -11,11 +11,26 @@ import type {
   MeteomaticsDataItem,
   Weather
 } from '../types/index.js';
+import { useGeolocated } from 'react-geolocated';
 
 export default function WeatherApp() {
   const [selectedCity, setSelectedCity] = useState<CityCoordinates | null>(
     null
   );
+
+  const { coords } = useGeolocated({
+    positionOptions: { enableHighAccuracy: true }
+  });
+
+  useEffect(() => {
+    if (coords && !selectedCity) {
+      setSelectedCity({
+        name: 'Current Location',
+        lat: coords.latitude,
+        lon: coords.longitude
+      });
+    }
+  }, [coords, selectedCity]);
 
   const {
     data,
@@ -46,7 +61,7 @@ export default function WeatherApp() {
     weather.uv = getValueWeather('uv:idx') ?? null;
 
     const weatherSymbol = getValueWeather('weather_symbol_1h:idx');
-    const { icon, description } = getWeatherIcon(weatherSymbol);
+    const { icon, description } = getWeatherIcon(weatherSymbol ?? 0);
     weather.icon = icon;
     weather.description = description;
   }
@@ -83,7 +98,7 @@ export default function WeatherApp() {
         const weatherSymb =
           weatherSymbol?.coordinates?.[0]?.dates?.[idx]?.value ?? null;
 
-        const { icon, description } = getWeatherIcon(weatherSymb);
+        const { icon, description } = getWeatherIcon(weatherSymb ?? 0);
 
         return {
           weekday,

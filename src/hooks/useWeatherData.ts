@@ -1,4 +1,3 @@
-import { METEOMATICS_URL, meteomaticsAuth } from '../utils/api.js';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import type { MeteomaticsResponse } from '../types/index.js';
@@ -40,47 +39,28 @@ const useWeatherData = (lat?: number, lon?: number): UseWeatherDataResult => {
   useEffect(() => {
     if (!lat || !lon) return;
 
-    const fetchCurrentWeather = async () => {
+    const fetchData = async () => {
       setLoadingCurrent(true);
-      setErrorCurrent(null);
-
-      try {
-        const currentUrl = `${METEOMATICS_URL}/now/t_2m:C,wind_speed_10m:kmh,msl_pressure:hPa,uv:idx,weather_symbol_1h:idx/${lat},${lon}/json`;
-        const currentResponse = await axios.get<MeteomaticsResponse>(
-          currentUrl,
-          {
-            auth: meteomaticsAuth
-          }
-        );
-        setData(currentResponse.data);
-      } catch (err) {
-        setErrorCurrent(err);
-      } finally {
-        setLoadingCurrent(false);
-      }
-    };
-
-    const fetchForecast = async () => {
       setLoadingForecast(true);
+      setErrorCurrent(null);
       setErrorForecast(null);
+
       try {
-        const forecastUrl = `${METEOMATICS_URL}/today+1DT12:00:00Z--today+5DT12:00:00Z:P1D/t_max_2m_24h:C,t_min_2m_24h:C,weather_symbol_24h:idx/${lat},${lon}/json`;
-        const forecastResponse = await axios.get<MeteomaticsResponse>(
-          forecastUrl,
-          {
-            auth: meteomaticsAuth
-          }
+        const res = await axios.get(
+          `/.netlify/functions/weather-proxy?lat=${lat}&lon=${lon}`
         );
-        setForecastData(forecastResponse.data);
-      } catch (err) {
+        setData(res.data.data);
+        setForecastData(res.data.forecastData);
+      } catch (err: unknown) {
+        setErrorCurrent(err);
         setErrorForecast(err);
       } finally {
+        setLoadingCurrent(false);
         setLoadingForecast(false);
       }
     };
 
-    fetchCurrentWeather();
-    fetchForecast();
+    fetchData();
   }, [lat, lon]);
 
   return {
