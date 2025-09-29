@@ -53,6 +53,17 @@ vi.mock('../hooks/useWeatherData.js', () => ({
   })
 }));
 
+vi.mock('react-geolocated', () => ({
+  useGeolocated: () => ({
+    coords: {
+      latitude: 51.5074,
+      longitude: -0.1278
+    },
+    isGeolocationAvailable: true,
+    isGeolocationEnabled: true
+  })
+}));
+
 describe('WeatherApp', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -65,6 +76,17 @@ describe('WeatherApp', () => {
       name: 'JustWeather'
     });
     expect(heading).toBeInTheDocument();
+  });
+
+  it('sets current location automatically on mount', async () => {
+    renderWithClient(<WeatherApp />);
+
+    await waitFor(() =>
+      expect(screen.getByText('Current Location')).toBeInTheDocument()
+    );
+
+    const weatherCard = screen.getByTestId('current-weather');
+    expect(weatherCard).toBeInTheDocument();
   });
 
   it('displays current weather after selecting a city', async () => {
@@ -185,5 +207,23 @@ describe('WeatherApp', () => {
       ).toBeInTheDocument()
     );
     expect(screen.queryByTestId('current-weather')).toBeNull();
+  });
+
+  it('renders correctly when geolocation is not available', async () => {
+    vi.doMock('react-geolocated', () => ({
+      useGeolocated: () => ({
+        coords: null,
+        isGeolocationAvailable: false,
+        isGeolocationEnabled: false
+      })
+    }));
+
+    const { default: WeatherAppWithNoGeo } = await import('./WeatherApp.js');
+    renderWithClient(<WeatherAppWithNoGeo />);
+
+    expect(screen.queryByText('Current Location')).toBeNull();
+    expect(screen.queryByTestId('current-weather')).toBeNull();
+
+    expect(screen.getByPlaceholderText('Enter city')).toBeInTheDocument();
   });
 });

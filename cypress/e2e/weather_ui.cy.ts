@@ -1,3 +1,6 @@
+/* eslint-disable prettier/prettier */
+/// <reference types="cypress" />
+
 describe('Weather App User Journey', () => {
   beforeEach(() => {
     cy.visit('/');

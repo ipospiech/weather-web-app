@@ -2,7 +2,7 @@
 
 describe('Weather App Homepage', () => {
   it('loads the homepage', () => {
-    cy.visit('http://localhost:8888');
-    cy.contains('JustWeather');
+    cy.visit('/');
+    cy.contains('JustWeather').should('be.visible');
   });
 });

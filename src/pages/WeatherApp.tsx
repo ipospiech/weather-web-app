@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchBar from '../components/SearchBar.js';
 import WeatherCard from '../components/WeatherCard.js';
 import useWeatherData from '../hooks/useWeatherData.js';
@@ -11,11 +11,26 @@ import type {
   MeteomaticsDataItem,
   Weather
 } from '../types/index.js';
+import { useGeolocated } from 'react-geolocated';
 
 export default function WeatherApp() {
   const [selectedCity, setSelectedCity] = useState<CityCoordinates | null>(
     null
   );
+
+  const { coords } = useGeolocated({
+    positionOptions: { enableHighAccuracy: true }
+  });
+
+  useEffect(() => {
+    if (coords && !selectedCity) {
+      setSelectedCity({
+        name: 'Current Location',
+        lat: coords.latitude,
+        lon: coords.longitude
+      });
+    }
+  }, [coords, selectedCity]);
 
   const {
     data,
