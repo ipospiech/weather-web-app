@@ -3,34 +3,55 @@
 Fast, sleek, and fully responsive — check the weather anywhere, anytime.  
 Instant city search, clear forecasts, and current conditions — all with a secure serverless backend.
 
+👉 **Live Demo:** [https://no-fuss-weather.netlify.app/](https://no-fuss-weather.netlify.app/)
+
+## 💻 Getting Started
+
+Clone the repository and install dependencies:
+
+```bash
+git clone <repo-url>
+cd weather-web-app
+npm install
+```
+
+## Local Development
+
+- **Frontend + Serverless Functions**:
+
+```bash
+npm run netlify:dev
+```
+
 ## 🛠️ Tech Stack
 
 This application is built with a React 19 + Vite stack for fast development, responsive UI, and optimized performance, while leveraging React Query for efficient caching and Netlify serverless functions to securely handle API keys and reduce backend latency.
 
-- **React 19** – Component-based architecture for a responsive, dynamic UI.
-- **Vite** – Lightning-fast build tool for efficient development.
-- **TypeScript** – Type safety and improved developer experience.
-- **React Query** – Caching and fetching of API data for instant responses.
-- **Axios** – HTTP requests to external APIs.
-- **Netlify Functions** – Serverless backend to secure API keys and proxy external requests.
-- **ESLint + Prettier** – Enforced code quality and consistent formatting.
-- **Cypress & Vitest** – End-to-end and unit testing for reliability.
+- **React 19 + Vite** – Component-based, fast development, optimized performance.
+- **TypeScript** – Type safety.
+- **React Query** – Efficient caching for city search.
+- **Axios** – HTTP requests.
+- **Netlify Functions** – Secure serverless backend for API keys.
+- **ESLint + Prettier** – Code quality and consistent formatting.
+- **Cypress & Vitest** – Unit and E2E testing.
 - **Rollup Visualizer** – Helps inspect bundle size and structure. More educational than necessary for a project of this scale.
 
 ## 🧪 Testing
 
-This project includes both **unit tests** and **end-to-end (E2E) tests** to ensure the Weather app works correctly.
+Unit and E2E tests ensure reliability:
 
-### Unit Tests
-
-- Written with **Vitest** and **React Testing Library**.
-- Covers components, hooks, and API interactions in isolation.
-- Mocked API responses ensure tests are **fast and deterministic**.
-- Run unit tests with coverage:
+- **Unit tests**: Vitest + React Testing Library, isolated API mocks.
+- **E2E tests**: Cypress simulates real user interactions.
+- **Combined coverage**: Unit + E2E coverage collected with Istanbul.
 
 ```bash
-npm run test:coverage
+npm run test           # Unit tests
+npm run test:e2e       # E2E tests
+npm run cypress:open   # E2E tests interactive
+npm run coverage       # Combined coverage report
 ```
+
+⚠️ **Warning:** Make sure the app is running locally (via `netlify:dev`) before running Cypress.
 
 <details> <summary>📈 SEE UNIT TESTS REPORT</summary>
 
@@ -38,36 +59,7 @@ npm run test:coverage
 
 </details>
 
-### End-to-End (E2E) Tests
-
-- Written with Cypress.
-- Simulates real user interactions: searching for cities, selecting from dropdown, viewing current weather and forecast, handling errors.
-- Run E2E tests:
-
-```bash
-npm run test:e2e
-```
-
-⚠️ **Warning:** Make sure the app is running locally (via `netlify de`v) before running Cypress..
-
-### Combined Coverage
-
-- Unit + E2E test coverage is collected with **Istanbul**.
-- Coverage shows which lines, branches, and functions are tested by both unit and E2E tests.
-- Run the combined coverage report:
-
-```bash
-npm run coverage
-```
-
-This command will:
-
-1. Run unit tests with coverage
-2. Run Cypress E2E tests
-3. Merge coverage
-4. Generate an HTML report in /coverage and open it in your default browser
-
-<details> <summary>📈 SEE E2E TESTS REPORT</summary>
+<details> <summary>📈 SEE COMBINED TESTS REPORT</summary>
 
 ![Combined coverage report](screenshots/image-1.png)
 
@@ -80,11 +72,11 @@ This command will:
 - **Keyboard navigation** – All interactive elements (search input, city options) are focusable and can be selected via **Enter** or **Space** keys.
 - **ARIA roles & attributes** – Search results, errors, and loading states use proper roles (`role="option"`, `role="alert"`, `role="status"`) with `aria-live` for dynamic updates.
 - **Semantic UI** – Headings, lists, and labels follow semantic HTML for assistive technologies.
-- **Visual & non-visual feedback** – Icons include `aria-hidden` where decorative, and text alternatives for weather descriptions.
+- **Visual & non-visual feedback** – Icons have `aria-hidden` where decorative, and text alternatives for weather descriptions.
 
-Accessibility was verified with **Lighthouse**, achieving **100% accessibility score**.
+Verified with **Lighthouse**, achieving **100% accessibility score**.
 
-<details> <summary>📈 SEE LIGHTHOUSE NAVIGATION PERFORMANSE REPORT</summary>
+<details> <summary>📈 SEE LIGHTHOUSE NAVIGATION PERFORMANCE REPORT</summary>
 
 **Desktop:**
 
@@ -98,39 +90,13 @@ Accessibility was verified with **Lighthouse**, achieving **100% accessibility s
 
 ## 🚀 Deployment
 
-The Weather app is deployed on **Netlify** with a **serverless backend** to securely handle API keys and sensitive credentials.
+The Weather app is deployed on **Netlify**.
 
-Unlike a S3 deployment, Netlify provides built-in serverless backend and secret management — reducing setup overhead and fitting my short delivery deadline.
+[![Netlify Status](https://api.netlify.com/api/v1/badges/30afa6c9-d29d-4f59-a1c7-6f6a62e48fb5/deploy-status)](https://app.netlify.com/sites/no-fuss-weather/deploys)
 
-### How Secrets Are Managed
-
-The app uses two APIs:
-
-1. **Geo API** – requires an API key.
-2. **Meteomatics API** – requires a username and password.
-
-To keep these secrets safe:
-
-- All sensitive keys and credentials are stored in **Netlify environment variables** (`GEO_API_KEY`, `METEOMATICS_USER`, `METEOMATICS_PASS`).
-- No secrets are exposed in the client-side code.
-
-### Serverless Backend
-
-To securely access the APIs:
-
-- Hooks (`useCoordinates`, `useWeatherData`) were refactored to call **Netlify Lambda functions** instead of directly calling external APIs from the frontend.
-- Lambda functions act as a **proxy**, injecting the required API credentials from environment variables.
-- This architecture ensures that API keys and credentials **never appear in the browser**.
-
-### Notes
-
-- Using serverless functions ensures the frontend remains lightweight and secure.
-- All API requests are proxied through Lambda, allowing for easy debugging and logging without exposing secrets.
-- You can test serverless functions locally with:
-
-```bash
-netlify dev
-```
+- **Netlify** with serverless backend secures API keys and sensitive credentials.
+- **Environment variables:** GEO_API_KEY, METEOMATICS_USER, METEOMATICS_PASS.
+- **Serverless Lambda functions:** proxy requests, keeping secrets safe.
 
 ## ⚡ Performance
 
@@ -138,30 +104,25 @@ The application was audited with **Lighthouse** and achieved a **100% performanc
 
 ### Local Performance Metrics
 
-- \*\*Largest Contentful Paint (LCP): main content (`h1.app-title`) loads quickly, comfortably under the 2.5 s threshold for good performance.
-- \*\*Cumulative Layout Shift (CLS): no unexpected layout shifts, providing a visually stable experience.
-- \*\*Interaction to Next Paint (INP): user interactions (typing/selecting city) respond immediately, under the 200 ms threshold.
+- **Largest Contentful Paint (LCP):** main content (`h1.app-title`) loads quickly, comfortably under the 2.5 s threshold for good performance.
+- **Cumulative Layout Shift (CLS):** no unexpected layout shifts, providing a visually stable experience.
+- **Interaction to Next Paint (INP):** user interactions (typing/selecting city) respond immediately, under the 200 ms threshold.
 
-<details> <summary>📈 SEE LOCAL METRICS PERFORMANSE REPORT</summary>
+<details> <summary>📈 SEE LOCAL METRICS PERFORMANCE REPORT</summary>
 
-![Performanse local metrics report](screenshots/image-8.png)
+![Performance local metrics report](screenshots/image-8.png)
 
 </details>
 
 ### Implemented Optimizations
 
-- **React Query caching** (`staleTime: 5 min`) for `useCoordinates` ensures repeat searches return instantly without new API calls.
-- **Debounced search input** (`1000ms`) prevents exceeding Geo API rate limits while maintaining responsive suggestions.
-- **Preloaded Meteomatics data** reduces redundant fetch delays.
-- **Serverless Netlify Functions** secure API keys and minimize latency.
-- **Optimized Vite build** with `esbuild` and efficient asset handling.
-- **Shared weather icons**: single 64×64 PNG set used for current and forecast weather, rendered responsively (40×40 in forecast on desktop).
+- React Query **caches city coordinates** for 5 min whereas weather data are always fresh.
+- **Debounced search** (`1000ms`) avoids hitting Geo API limits.
+- **Preloaded Meteomatics data** reduces redundant fetches.
+- Shared `64×64` weather icons for current and forecast (forecast rendered `40×40` on desktop).
+- Optimized Vite build with `esbuild`.
 - **Bundle analysis**: main JS dominated by `react-dom-client.production.js` (~519 KB, ~70%), typical for React apps, but overall build is lightweight for a SPA.  
-  To open analysis:
-
-```bash
-npx vite build
-```
+  👉 **Live Bundle Analysis Report:** [https://no-fuss-weather.netlify.app/bundle-analysis.html](https://no-fuss-weather.netlify.app/bundle-analysis.html)
 
 ### Data State Management
 
@@ -170,13 +131,12 @@ The app uses a component-driven approach with custom hooks and selective caching
 - **React Query** is used only for useCoordinates (city search) to cache repeated queries for 5 minutes.
 - **Weather data** is always fetched fresh to ensure up-to-date information.
 - **Custom hooks** encapsulate fetching, caching, and error handling, keeping components focused on rendering.
-- This approach avoids global state libraries (like Redux), making the app **lightweight, maintainable, and efficient**.
 
 ### Constraints
 
-- Free API plan (**1 request/sec, max 300/day**) limits stress testing at high load.
+- Free Geo API plan (**1 request/sec, max 300/day**) and free netlify tier (300 credits) limits stress testing at high load.
 
-<details> <summary>📈 SEE LIGHTHOUSE TIMESPAN PERFORMANSE REPORT</summary>
+<details> <summary>📈 SEE LIGHTHOUSE TIMESPAN PERFORMANCE REPORT</summary>
 
 ![Lighthouse Timespan Report Desktop](screenshots/image-4.png)
 

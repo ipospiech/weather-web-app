@@ -46,7 +46,7 @@ export default function WeatherApp() {
     weather.uv = getValueWeather('uv:idx') ?? null;
 
     const weatherSymbol = getValueWeather('weather_symbol_1h:idx');
-    const { icon, description } = getWeatherIcon(weatherSymbol);
+    const { icon, description } = getWeatherIcon(weatherSymbol ?? 0);
     weather.icon = icon;
     weather.description = description;
   }
@@ -83,7 +83,7 @@ export default function WeatherApp() {
         const weatherSymb =
           weatherSymbol?.coordinates?.[0]?.dates?.[idx]?.value ?? null;
 
-        const { icon, description } = getWeatherIcon(weatherSymb);
+        const { icon, description } = getWeatherIcon(weatherSymb ?? 0);
 
         return {
           weekday,

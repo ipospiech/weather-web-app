@@ -4492,7 +4492,7 @@
         },
         "end": {
           "line": 37,
-          "column": 63
+          "column": 68
         }
       },
       "15": {
@@ -4692,7 +4692,7 @@
         },
         "end": {
           "line": 61,
-          "column": 63
+          "column": 68
         }
       },
       "35": {
@@ -5340,6 +5340,42 @@
       "5": {
         "loc": {
           "start": {
+            "line": 37,
+            "column": 49
+          },
+          "end": {
+            "line": 37,
+            "column": 67
+          }
+        },
+        "type": "binary-expr",
+        "locations": [
+          {
+            "start": {
+              "line": 37,
+              "column": 49
+            },
+            "end": {
+              "line": 37,
+              "column": 62
+            }
+          },
+          {
+            "start": {
+              "line": 37,
+              "column": 66
+            },
+            "end": {
+              "line": 37,
+              "column": 67
+            }
+          }
+        ],
+        "line": 37
+      },
+      "6": {
+        "loc": {
+          "start": {
             "line": 42,
             "column": 2
           },
@@ -5367,7 +5403,7 @@
         ],
         "line": 42
       },
-      "6": {
+      "7": {
         "loc": {
           "start": {
             "line": 47,
@@ -5403,7 +5439,7 @@
         ],
         "line": 47
       },
-      "7": {
+      "8": {
         "loc": {
           "start": {
             "line": 58,
@@ -5439,7 +5475,7 @@
         ],
         "line": 58
       },
-      "8": {
+      "9": {
         "loc": {
           "start": {
             "line": 59,
@@ -5475,7 +5511,7 @@
         ],
         "line": 59
       },
-      "9": {
+      "10": {
         "loc": {
           "start": {
             "line": 60,
@@ -5511,7 +5547,43 @@
         ],
         "line": 60
       },
-      "10": {
+      "11": {
+        "loc": {
+          "start": {
+            "line": 61,
+            "column": 51
+          },
+          "end": {
+            "line": 61,
+            "column": 67
+          }
+        },
+        "type": "binary-expr",
+        "locations": [
+          {
+            "start": {
+              "line": 61,
+              "column": 51
+            },
+            "end": {
+              "line": 61,
+              "column": 62
+            }
+          },
+          {
+            "start": {
+              "line": 61,
+              "column": 66
+            },
+            "end": {
+              "line": 61,
+              "column": 67
+            }
+          }
+        ],
+        "line": 61
+      },
+      "12": {
         "loc": {
           "start": {
             "line": 136,
@@ -5547,7 +5619,7 @@
         ],
         "line": 136
       },
-      "11": {
+      "13": {
         "loc": {
           "start": {
             "line": 137,
@@ -5577,7 +5649,7 @@
         ],
         "line": 137
       },
-      "12": {
+      "14": {
         "loc": {
           "start": {
             "line": 137,
@@ -5613,7 +5685,7 @@
         ],
         "line": 137
       },
-      "13": {
+      "15": {
         "loc": {
           "start": {
             "line": 138,
@@ -5643,7 +5715,7 @@
         ],
         "line": 138
       },
-      "14": {
+      "16": {
         "loc": {
           "start": {
             "line": 146,
@@ -5673,7 +5745,7 @@
         ],
         "line": 146
       },
-      "15": {
+      "17": {
         "loc": {
           "start": {
             "line": 148,
@@ -5797,14 +5869,14 @@
       ],
       "5": [
         12,
-        70
+        0
       ],
       "6": [
         12,
-        0
+        70
       ],
       "7": [
-        60,
+        12,
         0
       ],
       "8": [
@@ -5816,33 +5888,41 @@
         0
       ],
       "10": [
-        14,
+        60,
         0
       ],
       "11": [
-        14,
+        60,
         0
       ],
       "12": [
         14,
-        14
+        0
       ],
       "13": [
+        14,
+        0
+      ],
+      "14": [
+        14,
+        14
+      ],
+      "15": [
         0,
         14
       ],
-      "14": [
+      "16": [
         0,
         0
       ],
-      "15": [
+      "17": [
         0,
         0
       ]
     },
     "inputSourceMap": {
       "version": 3,
-      "mappings": "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",
+      "mappings": "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",
       "names": [
         "React",
         "useState",
@@ -5910,7 +5990,7 @@
       "file": "C:/dev/projects/weather-web-app/src/pages/WeatherApp.tsx"
     },
     "_coverageSchema": "1a1c01bbd47fc00a2c39e90264f33305004495a9",
-    "hash": "061c7d22a0e8afc756235a58a6ba1da4c55a3d05"
+    "hash": "a009dc68ab099b66a6c4a5e00ad0cad97403df93"
   },
   "C:/dev/projects/weather-web-app/src/App.tsx": {
     "path": "C:/dev/projects/weather-web-app/src/App.tsx",
