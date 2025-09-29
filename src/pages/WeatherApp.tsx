@@ -1,0 +1,133 @@
+import React, { useEffect, useState } from 'react';
+import SearchBar from '../components/SearchBar.js';
+import WeatherCard from '../components/WeatherCard.js';
+import useWeatherData from '../hooks/useWeatherData.js';
+import { getWeatherIcon } from '../utils/weatherIcons.js';
+import ForecastCard from '../components/ForecastCard.js';
+import type {
+  CityCoordinates,
+  ForecastDay,
+  MeteomaticsCoordinateDate,
+  MeteomaticsDataItem,
+  Weather
+} from '../types/index.js';
+import { useGeolocated } from 'react-geolocated';
+
+export default function WeatherApp() {
+  const [selectedCity, setSelectedCity] = useState<CityCoordinates | null>(
+    null
+  );
+
+  const { coords } = useGeolocated({
+    positionOptions: { enableHighAccuracy: true }
+  });
+
+  useEffect(() => {
+    if (coords && !selectedCity) {
+      setSelectedCity({
+        name: 'Current Location',
+        lat: coords.latitude,
+        lon: coords.longitude
+      });
+    }
+  }, [coords, selectedCity]);
+
+  const {
+    data,
+    forecastData,
+    loadingCurrent,
+    loadingForecast,
+    errorCurrent,
+    errorForecast
+  } = useWeatherData(selectedCity?.lat, selectedCity?.lon);
+
+  const weather: Weather = {
+    temperature: null,
+    wind: null,
+    pressure: null,
+    uv: null,
+    icon: '',
+    description: ''
+  };
+
+  if (data) {
+    const getValueWeather = (param: string) =>
+      data.data.find((d: MeteomaticsDataItem) => d.parameter === param)
+        ?.coordinates?.[0]?.dates?.[0]?.value;
+
+    weather.temperature = getValueWeather('t_2m:C') ?? null;
+    weather.wind = getValueWeather('wind_speed_10m:kmh') ?? null;
+    weather.pressure = getValueWeather('msl_pressure:hPa') ?? null;
+    weather.uv = getValueWeather('uv:idx') ?? null;
+
+    const weatherSymbol = getValueWeather('weather_symbol_1h:idx');
+    const { icon, description } = getWeatherIcon(weatherSymbol ?? 0);
+    weather.icon = icon;
+    weather.description = description;
+  }
+
+  let forecast: ForecastDay[] = [];
+
+  if (forecastData) {
+    const getValueForecast = (param: string) =>
+      forecastData.data.find((d: MeteomaticsDataItem) => d.parameter === param);
+
+    const temperatureDay = getValueForecast('t_max_2m_24h:C');
+    const temperatureNight = getValueForecast('t_min_2m_24h:C');
+    const weatherSymbol = getValueForecast('weather_symbol_24h:idx');
+    const fiveDayDates = forecastData.data[0]?.coordinates?.[0]?.dates ?? [];
+
+    forecast = fiveDayDates
+      .slice(0, 5)
+      .map((day: MeteomaticsCoordinateDate, idx: number) => {
+        const isoDate = day.date;
+        const dateObj = new Date(isoDate);
+
+        const weekday = dateObj.toLocaleDateString(undefined, {
+          weekday: 'short'
+        });
+        const dayMonth = dateObj.toLocaleDateString(undefined, {
+          day: '2-digit',
+          month: 'short'
+        });
+
+        const dayTemp =
+          temperatureDay?.coordinates?.[0]?.dates?.[idx]?.value ?? null;
+        const nightTemp =
+          temperatureNight?.coordinates?.[0]?.dates?.[idx]?.value ?? null;
+        const weatherSymb =
+          weatherSymbol?.coordinates?.[0]?.dates?.[idx]?.value ?? null;
+
+        const { icon, description } = getWeatherIcon(weatherSymb ?? 0);
+
+        return {
+          weekday,
+          dayMonth,
+          temperatureDay: dayTemp,
+          temperatureNight: nightTemp,
+          icon,
+          description
+        };
+      });
+  }
+
+  return (
+    <div className="app-container">
+      <h1 className="app-title">
+        <span aria-hidden="true">🌐</span> JustWeather
+      </h1>
+      <SearchBar onSelectCity={setSelectedCity} />
+      <WeatherCard
+        city={selectedCity}
+        weather={weather}
+        loading={loadingCurrent}
+        error={errorCurrent as Error | null}
+      />
+      <ForecastCard
+        forecast={forecast}
+        loading={loadingForecast}
+        error={errorForecast as Error | null}
+      />
+    </div>
+  );
+}
